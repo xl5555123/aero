@@ -1,9 +1,12 @@
 package com.tencent.aero.service;
 
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import com.tencent.aero.model.File;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public interface FileService {
     File saveFile(MultipartFile file);
@@ -18,6 +21,6 @@ public interface FileService {
 
     boolean isFileExist(Long fileId);
 
-    BufferedImage getMp3Image(Long fileId);
+    byte[] getMp3Image(Long fileId) throws InvalidDataException, IOException, UnsupportedTagException;
 
 }

@@ -1,5 +1,7 @@
 package com.tencent.aero.controller;
 
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import com.tencent.aero.controller.exception.ResourceNotFoundException;
 import com.tencent.aero.model.File;
 import com.tencent.aero.service.FileService;
@@ -11,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "")
@@ -44,6 +49,15 @@ public class FileController {
         }
         byte[] fileByte = fileService.readFileById(fileId);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(fileByte);
+    }
+
+    @RequestMapping(value = "/api/files/{fileId}/image", method = RequestMethod.GET)
+    public HttpEntity<byte[]> showMusicImage(@PathVariable Long fileId) throws InvalidDataException, IOException, UnsupportedTagException {
+        byte[] image = fileService.getMp3Image(fileId);
+        if (image != null) {
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+        }
+        return null;
     }
 
     @RequestMapping(value = "/api/files/{fileId}", method = RequestMethod.DELETE)

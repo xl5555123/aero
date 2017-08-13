@@ -1,5 +1,9 @@
 package com.tencent.aero.service.impl;
 
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import com.tencent.aero.model.File;
 import com.tencent.aero.repository.FileRepository;
 import com.tencent.aero.service.FileService;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -129,7 +134,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public BufferedImage getMp3Image(Long fileId) {
+    public byte[] getMp3Image(Long fileId) throws InvalidDataException, IOException, UnsupportedTagException {
+        File file = fileRepository.findById(fileId);
+        if (!file.getName().contains("mp3")) {
+            return null;
+        }
+        Mp3File song = new Mp3File(aeroPath + file.getName());
+        if (song.hasId3v2Tag()){
+            ID3v2 id3v2tag = song.getId3v2Tag();
+            byte[] imageData = id3v2tag.getAlbumImage();
+            //converting the bytes to an image
+            return imageData;
+        }
         return null;
     }
 }
