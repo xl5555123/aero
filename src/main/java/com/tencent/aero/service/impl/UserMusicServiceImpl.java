@@ -64,6 +64,9 @@ public class UserMusicServiceImpl implements UserMusicService {
         Page<UserMusic> pUserMusic = userMusicRepository.findByuinAndTag(uin, true, pageable);
         for(UserMusic userMusic : pUserMusic){
             Music music = musicRepository.findOne(userMusic.getMusicId());
+            if (music == null){
+                continue;
+            }
             MusicResult mr = new MusicResult(userMusic, music);
             lmr.add(mr);
         }
@@ -102,6 +105,9 @@ public class UserMusicServiceImpl implements UserMusicService {
             }
             if(!found) {
                 Music music = musicRepository.findOne(musicStyles.get(index).getMusicId());
+                if(music == null){
+                    break;
+                }
                 System.out.println(music.getId());
                 musics.add(music);
                 flag = true;
@@ -120,6 +126,9 @@ public class UserMusicServiceImpl implements UserMusicService {
             }
             if(!found) {
                 Music music = musicRepository.findOne(countMusic.getId());
+                if(music == null){
+                    break;
+                }
                 musics.add(music);
                 System.out.println(music.getId());
                 ++n;
