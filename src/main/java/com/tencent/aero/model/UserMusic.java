@@ -1,15 +1,12 @@
 package com.tencent.aero.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class UserMusic {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
@@ -21,12 +18,19 @@ public class UserMusic {
     @Column(nullable = false)
     private Boolean tag;
 
+    public Long getId() {
+        return id;
+    }
+
     public UserMusic(String uin, Long musicId, Boolean tag) {
         this.uin = uin;
         this.musicId = musicId;
         this.tag = tag;
     }
 
+    public  UserMusic(){
+
+    }
     public String getUin() {
         return uin;
     }
