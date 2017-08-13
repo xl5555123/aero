@@ -7,6 +7,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import com.tencent.aero.model.File;
 import com.tencent.aero.repository.FileRepository;
 import com.tencent.aero.service.FileService;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,15 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Service
 @Transactional
@@ -35,8 +35,6 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileRepository fileRepository;
-
-    private ConcurrentHashMap<String, ReadWriteLock> fileLockers = new ConcurrentHashMap<>();
 
     private String getName(String origin, String suffix) {
         try {
@@ -80,10 +78,6 @@ public class FileServiceImpl implements FileService {
         if (file == null) {
             return null;
         }
-        String filename = file.getName();
-        ReadWriteLock readWriteLock = getReadWriteLock(filename);
-        readWriteLock.readLock().lock();
-
         try {
             FileInputStream fileInputStream = new FileInputStream(aeroPath + file.getName());
             return org.apache.commons.io.IOUtils.toByteArray(fileInputStream);
@@ -92,16 +86,7 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        readWriteLock.readLock().unlock();
         return null;
-    }
-
-    private ReadWriteLock getReadWriteLock(String fileName) {
-        if (!fileLockers.containsKey(fileName)) {
-            ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-            fileLockers.put(fileName, readWriteLock);
-        }
-        return fileLockers.get(fileName);
     }
 
     @Override
@@ -110,30 +95,23 @@ public class FileServiceImpl implements FileService {
         if (file == null) {
             return false;
         }
-        ReadWriteLock readWriteLock = getReadWriteLock(file.getName());
-        readWriteLock.writeLock().lock();
         fileRepository.deleteById(fileId);
         java.io.File realFile = new java.io.File(aeroPath + file.getName());
         realFile.delete();
-        readWriteLock.writeLock().unlock();
         return true;
     }
 
     @Override
-    public boolean isFileImage(Long fileId) {
-        File file = fileRepository.findById(fileId);
+    public boolean isFileImage(Long fileId) {File file = fileRepository.findById(fileId);
         if (file == null) {
             return false;
         }
-        ReadWriteLock readWriteLock = getReadWriteLock(file.getName());
-        readWriteLock.readLock().lock();
         java.io.File realFile = new java.io.File(aeroPath + file.getName());
         String mimetype= new MimetypesFileTypeMap().getContentType(realFile);
         String type = mimetype.split("/")[0];
         if(type.equals("image")) {
             return true;
         }
-        readWriteLock.readLock().unlock();
         return false;
     }
 
@@ -161,8 +139,6 @@ public class FileServiceImpl implements FileService {
         if (!file.getName().contains("mp3")) {
             return null;
         }
-        ReadWriteLock readWriteLock = getReadWriteLock(file.getName());
-        readWriteLock.readLock().lock();
         Mp3File song = new Mp3File(aeroPath + file.getName());
         if (song.hasId3v2Tag()){
             ID3v2 id3v2tag = song.getId3v2Tag();
@@ -170,7 +146,6 @@ public class FileServiceImpl implements FileService {
             //converting the bytes to an image
             return imageData;
         }
-        readWriteLock.readLock().unlock();
         return null;
     }
 }
