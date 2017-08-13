@@ -49,7 +49,7 @@ public class FileServiceImpl implements FileService {
         String newFileName = getName(fileName, suffix);
         String filePath = aeroPath + newFileName;
         logger.info(String.format("save file in %s", filePath));
-        java.io.File savedFile = new java.io.File(fileName);
+        java.io.File savedFile = new java.io.File(filePath);
         try {
             savedFile.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(savedFile);
