@@ -138,7 +138,7 @@ public class UserMusicServiceImpl implements UserMusicService {
         }
         flag = true;
         List<Music> allMusics = musicRepository.findAll();
-        while (flag && n < 10)
+        while (flag && n < 15)
         {
             flag = false;
             int mid = r.nextInt(allMusics.size());
@@ -161,6 +161,9 @@ public class UserMusicServiceImpl implements UserMusicService {
         //List<MusicResult> musicResults = new ArrayList<>();
         for(Music music : musics){
             UserMusic userMusic = userMusicRepository.findByuinAndMusicId(user.getUin(), music.getId());
+            if(userMusic.getTag()){
+                continue;
+            }
             if (userMusic == null) {
                 userMusic = new UserMusic(user.getUin(), music.getId(), false);
             }
