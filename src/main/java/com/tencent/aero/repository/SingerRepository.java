@@ -22,5 +22,4 @@ public interface SingerRepository extends Repository<Singer, Long> {
 
     void deleteById(Long id);
 
-
 }
