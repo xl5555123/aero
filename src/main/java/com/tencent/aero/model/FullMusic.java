@@ -11,7 +11,7 @@ public class FullMusic extends Music {
     }
 
     public FullMusic(Music music) {
-
+        super(music);
     }
 
     public List<Style> getStyles() {

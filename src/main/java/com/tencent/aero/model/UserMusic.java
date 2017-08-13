@@ -13,12 +13,33 @@ public class UserMusic {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private String uin;
 
     @Column(nullable = false)
     private Long musicId;
 
     @Column(nullable = false)
-    private Long tag;
+    private Boolean tag;
 
+    public UserMusic(String uin, Long musicId, Boolean tag) {
+        this.uin = uin;
+        this.musicId = musicId;
+        this.tag = tag;
+    }
+
+    public String getUin() {
+        return uin;
+    }
+
+    public Long getMusicId() {
+        return musicId;
+    }
+
+    public Boolean getTag() {
+        return tag;
+    }
+
+    public void setTag(Boolean tag) {
+        this.tag = tag;
+    }
 }

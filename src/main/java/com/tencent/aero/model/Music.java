@@ -1,6 +1,7 @@
 package com.tencent.aero.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Music {
@@ -24,6 +25,28 @@ public class Music {
     @Column(nullable = false)
     private Long chorusEnd;
 
+    @Column(nullable = false)
+    private Date created;
+
+    @Column(nullable = false)
+    private Date updated;
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
     public Music() {
 
     }
@@ -35,6 +58,8 @@ public class Music {
         this.totalTime = music.getTotalTime();
         this.chorusStart = music.getChorusStart();
         this.chorusEnd = music.getChorusEnd();
+        this.created = music.getCreated();
+        this.updated = music.getUpdated();
     }
 
     public Long getId() {

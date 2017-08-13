@@ -55,8 +55,13 @@ public class MusicServiceImpl implements MusicService {
         if (fullMusic.getAttachedFileId() == null || !fileService.isFileExist(fullMusic.getAttachedFileId()) || isEmpty(fullMusic.getSingers()) || isEmpty(fullMusic.getStyles())) {
             throw new NoPermissionException();
         }
-        Music savedMusic = musicRepository.save(fullMusic);
+        fullMusic.setCreated(new Date());
+        fullMusic.setUpdated(new Date());
+        Music music = new Music(fullMusic);
+
+        Music savedMusic = musicRepository.save(music);
         Long musicId = savedMusic.getId();
+        fullMusic.setId(musicId);
         for (Style style : fullMusic.getStyles()) {
             MusicStyle musicStyle = new MusicStyle();
             musicStyle.setMusicId(musicId);
@@ -99,6 +104,7 @@ public class MusicServiceImpl implements MusicService {
             musics = musicRepository.findByIdIsIn(ids.getContent());
         }
         else {
+            pageable = new PageRequest(page, MUSIC_COUNT_PER_PAGE, new Sort(Sort.Direction.ASC, "id"));
             musics = musicRepository.findAll(pageable).getContent();
         }
         return fillMusics(musics);
@@ -182,7 +188,8 @@ public class MusicServiceImpl implements MusicService {
     public FullMusic updateMusic(FullMusic fullMusic) {
         Music originMusic = musicRepository.findOne(fullMusic.getId());
         fullMusic.setAttachedFileId(originMusic.getAttachedFileId());
-        musicRepository.save(fullMusic);
+        fullMusic.setUpdated(new Date());
+        musicRepository.save(new Music(fullMusic));
 
         List<MusicStyle> musicStyles = musicStyleRepository.findByMusicId(fullMusic.getId());
         List<Long> styleIds = new ArrayList<>();

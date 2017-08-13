@@ -14,6 +14,8 @@ public interface MusicStyleRepository extends PagingAndSortingRepository<MusicSt
 
     Page<MusicStyle> findByStyleId(Long styleId, Pageable pageable);
 
+    List<MusicStyle> findByStyleId(Long styleId);
+
     void deleteById(Long id);
 
     List<MusicStyle> findByMusicId(Long musicId);

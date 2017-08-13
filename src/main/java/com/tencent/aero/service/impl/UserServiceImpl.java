@@ -17,43 +17,43 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository UserRepository;
+    private UserRepository userRepository;
 
     @Override
     public List<User> getAllUsers() {
-        return UserRepository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserByUin(String uin) {
-        return UserRepository.findByUin(uin);
+        return userRepository.findByUin(uin);
     }
 
     @Override
     public User getUserById(Long id) {
-        return UserRepository.findById(id);
+        return userRepository.findById(id);
     }
 
     @Override
     public User addUser(User user) {
-        User existUser = UserRepository.findByUin(user.getUin());
+        User existUser = userRepository.findByUin(user.getUin());
         if (existUser != null) {
             return existUser;
         }
-        return UserRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public void deleteUser(String uin) {
-        UserRepository.deleteByUin(uin);
+        userRepository.deleteByUin(uin);
     }
 
     @Override
     public User updateUser(String uin, User user) {
-        User existUser = UserRepository.findByUin(uin);
+        User existUser = userRepository.findByUin(uin);
         if (existUser == null) {
             return null;
         }
-        return UserRepository.save(user);
+        return userRepository.save(user);
     }
 }
