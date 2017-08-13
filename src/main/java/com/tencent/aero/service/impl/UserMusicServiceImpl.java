@@ -184,7 +184,7 @@ public class UserMusicServiceImpl implements UserMusicService {
         List<MusicResult> musicResults = new ArrayList<>();
         java.util.Random r = new java.util.Random();
         List<Music> musics = new ArrayList<>();
-        if(userMusics == null)
+        if(userMusics == null || userMusics.size() == 0)
         {
             return newUserRecommend(user ,0 ,musics, musicResults);
         }
