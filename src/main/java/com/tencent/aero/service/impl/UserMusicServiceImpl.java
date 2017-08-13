@@ -161,11 +161,11 @@ public class UserMusicServiceImpl implements UserMusicService {
         //List<MusicResult> musicResults = new ArrayList<>();
         for(Music music : musics){
             UserMusic userMusic = userMusicRepository.findByuinAndMusicId(user.getUin(), music.getId());
-            if(userMusic.getTag()){
-                continue;
-            }
             if (userMusic == null) {
                 userMusic = new UserMusic(user.getUin(), music.getId(), false);
+            }
+			if(userMusic.getTag()){
+                continue;
             }
             CountMusic countMusic = countMusicRepository.findByid(music.getId());
             if(countMusic == null) {
