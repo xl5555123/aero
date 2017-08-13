@@ -7,7 +7,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import com.tencent.aero.model.File;
 import com.tencent.aero.repository.FileRepository;
 import com.tencent.aero.service.FileService;
-import org.apache.tomcat.util.security.MD5Encoder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
-import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -28,7 +26,7 @@ import java.util.Date;
 @Transactional
 public class FileServiceImpl implements FileService {
 
-    public final static org.slf4j.Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+    public final static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Value("${aero.path}")
     private String aeroPath;
