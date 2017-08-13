@@ -13,7 +13,7 @@ public interface MusicRepository  extends PagingAndSortingRepository<Music, Long
 
     Music save(Music music);
 
-    Music deleteById(Long id);
+    void deleteById(Long id);
 
 
 }
