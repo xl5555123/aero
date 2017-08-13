@@ -47,7 +47,9 @@ public class FileServiceImpl implements FileService {
         String fileName = file.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
         String newFileName = getName(fileName, suffix);
-        java.io.File savedFile = new java.io.File(aeroPath + newFileName);
+        String filePath = aeroPath + newFileName;
+        logger.info(String.format("save file in %s", filePath));
+        java.io.File savedFile = new java.io.File(fileName);
         try {
             savedFile.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(savedFile);
