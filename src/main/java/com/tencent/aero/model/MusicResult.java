@@ -19,6 +19,26 @@ public class MusicResult {
 
     private String artist;
 
+    private String url;
+
+    private String cover_url;
+
+    private Boolean favourite;
+
+    private Long chorusStart;
+
+
+    private Long chorusEnd;
+
+    public MusicResult(UserMusic userMusic, Music music) {
+        this.id = userMusic.getMusicId();
+        this.title = music.getName();
+        this.favourite = userMusic.getTag();
+        this.url = String.format("/api/files/%d", music.getAttachedFileId());
+        this.chorusStart = music.getChorusStart();
+        this.chorusEnd = music.getChorusEnd();
+    }
+
     public Long getId() {
         return id;
     }
@@ -81,24 +101,5 @@ public class MusicResult {
 
     public void setChorusEnd(Long chorusEnd) {
         this.chorusEnd = chorusEnd;
-    }
-
-    private String url;
-
-    private String cover_url;
-
-    private Boolean favourite;
-
-    private Long chorusStart;
-
-    private Long chorusEnd;
-
-    public MusicResult(UserMusic userMusic, Music music) {
-        this.id = userMusic.getMusicId();
-        this.title = music.getName();
-        this.favourite = userMusic.getTag();
-        this.url = Long.toString(music.getAttachedFileId());
-        this.chorusStart = music.getChorusStart();
-        this.chorusEnd = music.getChorusEnd();
     }
 }

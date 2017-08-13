@@ -50,7 +50,7 @@ public class UserMusicController {
         return newUser;
     }
 */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public UserMusic updateUser(@RequestBody  UserMusic userMusic) {
         return userMusicService.updateTag(userMusic);
     }

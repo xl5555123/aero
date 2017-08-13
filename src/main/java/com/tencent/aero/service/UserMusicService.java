@@ -1,5 +1,6 @@
 package com.tencent.aero.service;
 
+import com.tencent.aero.model.Music;
 import com.tencent.aero.model.User;
 import com.tencent.aero.model.UserMusic;
 import com.tencent.aero.model.MusicResult;
@@ -17,7 +18,7 @@ public interface UserMusicService {
 
     List<MusicResult> recommend(String uin);
 
-    List<MusicResult> newUserRecommend(User user, int n, List<MusicResult> musicResults);
+    List<MusicResult> newUserRecommend(User user, int n, List<Music> musics, List<MusicResult> musicResults);
 
     List<MusicResult> oldUserRecommend(User user);
 

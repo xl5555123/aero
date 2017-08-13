@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -55,6 +56,7 @@ public class FileServiceImpl implements FileService {
             FileOutputStream fileOutputStream = new FileOutputStream(savedFile);
             fileOutputStream.write(file.getBytes());
             fileOutputStream.close();
+            logger.info(String.format("save file in %s finished!", filePath));
             File newFileItem = new File();
             newFileItem.setName(newFileName);
             return fileRepository.save(newFileItem);
@@ -124,5 +126,10 @@ public class FileServiceImpl implements FileService {
             }
         }
         return false;
+    }
+
+    @Override
+    public BufferedImage getMp3Image(Long fileId) {
+        return null;
     }
 }

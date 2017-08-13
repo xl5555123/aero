@@ -74,8 +74,9 @@ public class UserMusicServiceImpl implements UserMusicService {
         List<MusicResult> musicResults = new ArrayList<>();
         User user = userRepository.findByUin(uin);
         List<UserMusic> userMusics = userMusicRepository.findByUin(uin);
+        List<Music> musics = new ArrayList<>();
         if(userMusics == null){
-            return newUserRecommend(user, 0, musicResults);
+            return newUserRecommend(user, 0, musics, musicResults);
         }
         else{
             return oldUserRecommend(user);
@@ -83,9 +84,9 @@ public class UserMusicServiceImpl implements UserMusicService {
 
     }
     @Override
-    public List<MusicResult> newUserRecommend(User user, int n, List<MusicResult> musicResults) {
+    public List<MusicResult> newUserRecommend(User user, int n, List<Music> musics, List<MusicResult> musicResults) {
         List<MusicStyle> musicStyles = musicStyleRepository.findByStyleId(user.getStyleId());
-        List<Music> musics = new ArrayList<>();
+        //List<Music> musics = new ArrayList<>();
         java.util.Random r = new java.util.Random();
         Boolean flag = true;
         int musicStyleLen = musicStyles.size();
@@ -94,13 +95,14 @@ public class UserMusicServiceImpl implements UserMusicService {
             int index = r.nextInt(musicStyleLen);
             Boolean found = false;
             for(Music music : musics) {
-                if(music.getId() == musicStyles.get(index).getMusicId()) {
+                if(music.getId().equals(musicStyles.get(index).getMusicId())) {
                     found = true;
                     break;
                 }
             }
             if(!found) {
                 Music music = musicRepository.findOne(musicStyles.get(index).getMusicId());
+                System.out.println(music.getId());
                 musics.add(music);
                 flag = true;
                 ++n;
@@ -111,7 +113,7 @@ public class UserMusicServiceImpl implements UserMusicService {
         for(CountMusic countMusic : countMusics){
             Boolean found = false;
             for(Music music : musics) {
-                if(music.getId() == countMusic.getId()) {
+                if(music.getId().equals(countMusic.getId())) {
                     found = true;
                     break;
                 }
@@ -119,20 +121,21 @@ public class UserMusicServiceImpl implements UserMusicService {
             if(!found) {
                 Music music = musicRepository.findOne(countMusic.getId());
                 musics.add(music);
+                System.out.println(music.getId());
                 ++n;
             }
             if(n > 9)
                 break;
         }
         flag = true;
+        List<Music> allMusics = musicRepository.findAll();
         while (flag && n < 10)
         {
             flag = false;
-            List<Music> allMusics = musicRepository.findAll();
             int mid = r.nextInt(allMusics.size());
             Boolean found = false;
             for(Music music : musics) {
-                if(music.getId() == allMusics.get(mid).getId()) {
+                if(music.getId().equals(allMusics.get(mid).getId())) {
                     found = true;
                     break;
                 }
@@ -140,10 +143,12 @@ public class UserMusicServiceImpl implements UserMusicService {
             if(!found) {
                 Music music = musicRepository.findOne(allMusics.get(mid).getId());
                 musics.add(music);
+                System.out.println(music.getId());
                 flag = true;
                 ++n;
             }
         }
+        System.out.println("n="+n);
         //List<MusicResult> musicResults = new ArrayList<>();
         for(Music music : musics){
             UserMusic userMusic = userMusicRepository.findByuinAndMusicId(user.getUin(), music.getId());
@@ -169,12 +174,13 @@ public class UserMusicServiceImpl implements UserMusicService {
         List<UserMusic> userMusics = userMusicRepository.findByuinAndTag(user.getUin(), true);
         List<MusicResult> musicResults = new ArrayList<>();
         java.util.Random r = new java.util.Random();
+        List<Music> musics = new ArrayList<>();
         if(userMusics == null)
         {
-            return newUserRecommend(user ,0 , musicResults);
+            return newUserRecommend(user ,0 ,musics, musicResults);
         }
         List<Music> allMusics = musicRepository.findAll();
-        List<Music> musics = new ArrayList<>();
+
         int n = 0;
         int mid = r.nextInt(userMusics.size());
         List<UserMusic> userMusics1 = userMusicRepository.findByMusicId(userMusics.get(mid).getMusicId());
@@ -189,24 +195,8 @@ public class UserMusicServiceImpl implements UserMusicService {
         }
         if(n < 10)
         {
-            for(Music music : musics){
-                UserMusic userMusic = userMusicRepository.findByuinAndMusicId(user.getUin(), music.getId());
-                if (userMusic == null) {
-                    userMusic = new UserMusic(user.getUin(), music.getId(), false);
-                }
-                CountMusic countMusic = countMusicRepository.findByid(music.getId());
-                if(countMusic == null) {
-                    countMusic = new CountMusic(1);
-                    countMusicRepository.save(countMusic);
-                }
-                else {
-                    countMusic.setCount(countMusic.getCount() + 1);
-                    countMusicRepository.save(countMusic);
-                }
-                MusicResult mr = new MusicResult(userMusic, music);
-                musicResults.add(mr);
-            }
-            return newUserRecommend(user , n , musicResults);
+            //System.out.println("outuser");
+            return newUserRecommend(user , n, musics, musicResults);
         }
         //List<Music> musics = musicRepository.findAll();
         //List<User> users = userRepository.findAll();

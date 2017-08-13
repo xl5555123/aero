@@ -3,6 +3,8 @@ package com.tencent.aero.service;
 import com.tencent.aero.model.File;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+
 public interface FileService {
     File saveFile(MultipartFile file);
 
@@ -15,5 +17,7 @@ public interface FileService {
     String getFileNameById(Long fileId);
 
     boolean isFileExist(Long fileId);
+
+    BufferedImage getMp3Image(Long fileId);
 
 }
