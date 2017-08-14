@@ -190,24 +190,28 @@ public class MusicServiceImpl implements MusicService {
         fullMusic.setAttachedFileId(originMusic.getAttachedFileId());
         fullMusic.setUpdated(new Date());
         musicRepository.save(new Music(fullMusic));
-
-        List<MusicStyle> musicStyles = musicStyleRepository.findByMusicId(fullMusic.getId());
-        List<Long> styleIds = new ArrayList<>();
-        for (MusicStyle musicStyle : musicStyles) {
-            styleIds.add(musicStyle.getStyleId());
+        musicStyleRepository.deleteByMusicId(fullMusic.getId());
+        musicSingerRepository.deleteByMusicId(fullMusic.getId());
+        for (Style style : emptyIfNull(fullMusic.getStyles())) {
+            MusicStyle musicStyle = new MusicStyle();
+            musicStyle.setMusicId(fullMusic.getId());
+            musicStyle.setStyleId(style.getId());
+            musicStyleRepository.save(musicStyle);
         }
-        musicStyleRepository.deleteByMusicIdAndStyleIdNotIn(fullMusic.getId(), styleIds);
-        List<MusicSinger> musicSingers = musicSingerRepository.findByMusicId(fullMusic.getId());
-        List<Long> singerIds = new ArrayList<>();
-        for (MusicSinger musicSinger : musicSingers) {
-            singerIds.add(musicSinger.getSingerId());
+        for (Singer singer : emptyIfNull(fullMusic.getSingers())) {
+            MusicSinger musicSinger = new MusicSinger();
+            musicSinger.setMusicId(fullMusic.getId());
+            musicSinger.setSingerId(singer.getId());
+            musicSingerRepository.save(musicSinger);
         }
-        musicSingerRepository.deleteByMusicIdAndSingerIdNotIn(fullMusic.getId(), singerIds);
         clearCache();
         return fillMusic(fullMusic);
     }
 
-
-
-
+    private <T> List<T> emptyIfNull(List<T> list) {
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
 }
